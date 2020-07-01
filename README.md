@@ -2,9 +2,8 @@
 Repository
 **This repository is for automating AWS using Python**
 
-<<<<<<< HEAD
 ### 01- S3-Static-Website
-This is a script that will sync a local directory to an s3 bucket, and can configure Route53 and cloudfront. 
+This is a script that will sync a local directory to an s3 bucket, and can configure Route53 and cloudfront.
 =======
 ### 01- Static
 This is a script that will sync a local directory to an s3 bucket, and can configure Route53 and cloudfront.
@@ -14,4 +13,3 @@ It currently has the following Features.
 
 - list-buckets
 - list-bucket-objects
->>>>>>> 3fb75a0... Used Click to organize the script
