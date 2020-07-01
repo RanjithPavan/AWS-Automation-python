@@ -1,4 +1,6 @@
 # AWS-Automation-python
 Repository
 **This repository is for automating AWS using Python**
-This repo will have a static website
+
+### 01- Static
+This is a script that will sync a local directory to an s3 bucket, and can configure Route53 and cloudfront. 
