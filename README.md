@@ -20,3 +20,4 @@ It currently has the following Features.
 - list-buckets
 - list-bucket-objects
 - Create and set up bucket
+- Sync website directory tree to bucket
