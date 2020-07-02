@@ -1,4 +1,4 @@
-#Using click to organize
+#Using click to organize. Click can be installed using pipenv
 import boto3
 import click
 
