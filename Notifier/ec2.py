@@ -1,4 +1,5 @@
 # coding: utf-8
+#ec2 creation
 import boto3
 session = boto3.Session(profile_name='pythonAutomation')
 ec2 = session.resource('ec2')
