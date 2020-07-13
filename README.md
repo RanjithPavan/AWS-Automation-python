@@ -21,3 +21,4 @@ It is to notify slack users of changes to AWS account using CloudWatch events
 
 #### Features
 It currently has the following features:
+  Send notifications to Slack when cloudwatch events happen
