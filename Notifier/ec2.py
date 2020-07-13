@@ -1,7 +1,7 @@
 # coding: utf-8
 #ec2 creation
 import boto3
-session = boto3.Session(profile_name='pythonAutomation')
+session = boto3.Session(profile_name='automation')
 ec2 = session.resource('ec2')
 key_name = 'python_automation_key'
 key_path = key_name + '.pem'
