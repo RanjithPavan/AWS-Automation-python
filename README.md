@@ -22,3 +22,9 @@ It currently has the following Features.
 - Create and set up bucket
 - Sync website directory tree to bucket
 - Set AWS profile with --profile option
+
+### 02- Notifier
+It is to notify slack users of changes to AWS account using CloudWatch events
+
+#### Features
+It currently has the following features:
