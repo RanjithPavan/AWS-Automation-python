@@ -18,8 +18,34 @@ provider:
           - ''
           - - ${self:custom.videosBucketArn}
             - '/*'
+    - Effect: "Allow"
+      Action:
+        - iam:GetRole
+        - iam:PassRole
+      Resource:
+        Fn::GetAtt:
+          - RekognitionSNSPublishRole
+          - Arn
+
+
+  environment:
+    REKOGNITION_SNS_TOPIC_ARN: ${self:custom.rekognitionSNSTopicARN}
+    REKOGNITION_ROLE_ARN:
+      Fn::GetAtt:
+        - RekognitionSNSPublishRole
+        - Arn
 
 custom:
+  rekognitionSNSTopicARN:
+    Fn::Join:
+      - ':'
+      - - arn
+        - aws
+        - sns
+        - Ref: AWS::Region
+        - Ref: AWS::AccountId
+        - handleLabelDetectionTopic
+
   videosBucketArn:
     Fn::Join:
       - ':'
@@ -39,3 +65,32 @@ functions:
           event: s3:ObjectCreated:*
           rules:
             - suffix: .mp4
+  handleLabelDetection:
+    handler: handler.handle_label_detection
+    event:
+      - sns: handleLabelDetectionTopic
+
+resources:
+  Resources:
+    RekognitionSNSPublishRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - rekognition.amazonaws.com
+              Action:
+                - sts:AssumeRole
+
+        Policies:
+          - PolicyName: RekognitionSNSPublishpolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - sns:Publish
+                  Resource: ${self:custom.rekognitionSNSTopicARN}
