@@ -1,0 +1,7 @@
+{
+  "videolyzer" :{
+    "profile":"automation",
+    "videos_bucket":"ranjithvideoanalyzer1",
+    "videos_table":""
+  }
+}

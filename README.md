@@ -22,3 +22,20 @@ It is to notify slack users of changes to AWS account using CloudWatch events
 #### Features
 It currently has the following features:
   Send notifications to Slack when cloudwatch events happen
+
+### 03 - Video-Analyzer
+This is a serverless project that triggers an event whenever a video is uploaded into S3 bucket. Analyze the video with rekognition and store details in dynamo DB.
+**Service Information**
+  service: videolyzer
+  stage: dev
+  region: us-east-1
+  stack: videolyzer-dev
+  resources: 8
+  api keys:
+    None
+  endpoints:
+    None
+  functions:
+    startProcessingVideo: videolyzer-dev-startProcessingVideo
+  layers:
+    None
