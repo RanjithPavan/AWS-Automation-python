@@ -5,6 +5,30 @@ provider:
   name: aws
   runtime: python3.8
   profile: ${file(../config.dev.json):Videolyzer.profile}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "rekognition:*"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"
+      Resource:
+        - Fn::Join:
+          - ''
+          - - ${self:custom.videosBucketArn}
+            - '/*'
+
+custom:
+  videosBucketArn:
+    Fn::Join:
+      - ':'
+      - - arn
+        - aws
+        - s3
+        - ''
+        - ''
+        - ${file(../config.dev.json):Videolyzer.videos_bucket}
 
 functions:
   startProcessingVideo:
