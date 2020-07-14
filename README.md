@@ -26,16 +26,16 @@ It currently has the following features:
 ### 03 - Video-Analyzer
 This is a serverless project that triggers an event whenever a video is uploaded into S3 bucket. Analyze the video with rekognition and store details in dynamo DB.
 **Service Information**
-  service: videolyzer
-  stage: dev
-  region: us-east-1
-  stack: videolyzer-dev
-  resources: 8
-  api keys:
+  - service: videolyzer
+  - stage: dev
+  - region: us-east-1
+  - stack: videolyzer-dev
+  - resources: 8
+  - api keys:
     None
-  endpoints:
+  - endpoints:
     None
-  functions:
+  - functions:
     startProcessingVideo: videolyzer-dev-startProcessingVideo
-  layers:
+  - layers:
     None
