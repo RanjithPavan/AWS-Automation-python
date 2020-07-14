@@ -1,10 +1,10 @@
 service: videolyzer
 
-
 provider:
   name: aws
-  runtime: python3.8
-  profile: ${file(../config.dev.json):Videolyzer.profile}
+  runtime: python3.6
+  profile: ${file(../config.${self:provider.stage}.json):videolyzer.profile}
+
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -26,17 +26,25 @@ provider:
         Fn::GetAtt:
           - RekognitionSNSPublishRole
           - Arn
-
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:PutItem"
+      Resource:
+        Fn::GetAtt:
+          - VideosTable
+          - Arn
 
   environment:
-    REKOGNITION_SNS_TOPIC_ARN: ${self:custom.rekognitionSNSTopicARN}
+    DYNAMODB_TABLE_NAME: ${self:custom.videosTableName}
+    REKOGNITION_SNS_TOPIC_ARN: ${self:custom.rekognitionSNSTopicArn}
     REKOGNITION_ROLE_ARN:
       Fn::GetAtt:
         - RekognitionSNSPublishRole
         - Arn
 
 custom:
-  rekognitionSNSTopicARN:
+  videosTableName: ${file(../config.${self:provider.stage}.json):videolyzer.videos_table}
+  rekognitionSNSTopicArn:
     Fn::Join:
       - ':'
       - - arn
@@ -45,33 +53,47 @@ custom:
         - Ref: AWS::Region
         - Ref: AWS::AccountId
         - handleLabelDetectionTopic
-
   videosBucketArn:
-    Fn::Join:
-      - ':'
-      - - arn
-        - aws
-        - s3
-        - ''
-        - ''
-        - ${file(../config.dev.json):Videolyzer.videos_bucket}
+      Fn::Join:
+        - ':'
+        - - arn
+          - aws
+          - s3
+          - ''
+          - ''
+          - ${file(../config.${self:provider.stage}.json):videolyzer.videos_bucket}
 
 functions:
   startProcessingVideo:
     handler: handler.start_processing_video
     events:
       - s3:
-          bucket: ${file(../config.dev.json):Videolyzer.videos_bucket}
+          bucket: ${file(../config.${self:provider.stage}.json):videolyzer.videos_bucket}
           event: s3:ObjectCreated:*
           rules:
             - suffix: .mp4
   handleLabelDetection:
     handler: handler.handle_label_detection
-    event:
+    events:
       - sns: handleLabelDetectionTopic
 
 resources:
   Resources:
+    VideosTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: videoName
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: videoName
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.videosTableName}
     RekognitionSNSPublishRole:
       Type: AWS::IAM::Role
       Properties:
@@ -84,13 +106,12 @@ resources:
                   - rekognition.amazonaws.com
               Action:
                 - sts:AssumeRole
-
         Policies:
-          - PolicyName: RekognitionSNSPublishpolicy
+          - PolicyName: RekognitionSNSPublishPolicy
             PolicyDocument:
               Version: '2012-10-17'
               Statement:
                 - Effect: Allow
                   Action:
                     - sns:Publish
-                  Resource: ${self:custom.rekognitionSNSTopicARN}
+                  Resource: ${self:custom.rekognitionSNSTopicArn}
